@@ -1,6 +1,6 @@
 package ru.hse.vcsserver.constants;
 
-public class Messages {
+public final class Messages {
 
     public static final String RECEIVING_FILES = "receiving files...";
 
