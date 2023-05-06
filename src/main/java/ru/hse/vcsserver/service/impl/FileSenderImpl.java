@@ -7,6 +7,7 @@ import ru.hse.vcsserver.service.FilesSender;
 @Slf4j
 @Service
 public class FileSenderImpl implements FilesSender {
+
     @Override
     public boolean sendFiles(String directoryName) {
         return false;
