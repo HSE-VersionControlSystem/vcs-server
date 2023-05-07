@@ -1,7 +1,9 @@
 package ru.hse.vcsserver.controller;
 
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.NotDirectoryException;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +34,9 @@ public class FilesController {
     }
 
     @GetMapping("pull/{folderName}")
-    public ResponseEntity<Void> sendFiles(@PathVariable String folderName) {
-
+    public ResponseEntity<Void> sendFiles(@PathVariable String folderName)
+            throws NotDirectoryException {
+        filesSender.sendFiles(folderName);
         return ResponseEntity.ok().build();
     }
 }

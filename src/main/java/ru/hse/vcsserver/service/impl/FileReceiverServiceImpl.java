@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hse.vcsserver.constants.Errors;
 import ru.hse.vcsserver.constants.Messages;
 import ru.hse.vcsserver.service.FilesReceiverService;
 
@@ -53,7 +54,7 @@ public class FileReceiverServiceImpl implements FilesReceiverService {
                 try {
                     Files.createDirectory(path);
                 } catch (final FileAlreadyExistsException exception) {
-                    log.info(Messages.FILE_ALREADY_EXISTS);
+                    log.info(Errors.FILE_ALREADY_EXISTS);
                 } catch (final SecurityException securityException) {
                     throw securityException;
                 } catch (final Exception exception) {

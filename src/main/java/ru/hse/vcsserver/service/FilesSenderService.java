@@ -1,5 +1,7 @@
 package ru.hse.vcsserver.service;
 
+import java.nio.file.NotDirectoryException;
+
 public interface FilesSenderService {
 
     /**
@@ -8,5 +10,5 @@ public interface FilesSenderService {
      * @param directoryName Directory's name.
      * @return true if all files sent and the response code is >= 200 && < 300, otherwise false.
      */
-    boolean sendFiles(String directoryName);
+    boolean sendFiles(String directoryName) throws NotDirectoryException;
 }
