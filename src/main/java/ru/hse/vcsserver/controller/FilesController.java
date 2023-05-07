@@ -1,5 +1,6 @@
 package ru.hse.vcsserver.controller;
 
+import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,8 @@ public class FilesController {
     }
 
     @GetMapping("pull/{folderName}")
-    public void sendFiles(@PathVariable String folderName) {
+    public ResponseEntity<Void> sendFiles(@PathVariable String folderName) {
 
+        return ResponseEntity.ok().build();
     }
 }

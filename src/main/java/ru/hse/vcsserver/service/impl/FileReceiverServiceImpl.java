@@ -1,6 +1,7 @@
 package ru.hse.vcsserver.service.impl;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +52,11 @@ public class FileReceiverServiceImpl implements FilesReceiverService {
             if (!Files.exists(path)) {
                 try {
                     Files.createDirectory(path);
-                } catch (final IOException exception) {
+                } catch (final FileAlreadyExistsException exception) {
+                    log.info(Messages.FILE_ALREADY_EXISTS);
+                } catch (final SecurityException securityException) {
+                    throw securityException;
+                } catch (final Exception exception) {
                     log.error(exception.getClass().getName() + "\t" + exception.getMessage());
                 }
             }
