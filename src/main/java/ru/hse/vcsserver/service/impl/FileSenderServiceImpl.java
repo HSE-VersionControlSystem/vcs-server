@@ -3,6 +3,7 @@ package ru.hse.vcsserver.service.impl;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
@@ -25,13 +26,41 @@ import ru.hse.vcsserver.service.FilesSenderService;
 @Service
 public class FileSenderServiceImpl implements FilesSenderService {
 
+    private final String directoriesNamesKey = "directoriesNames";
+
     @Override
     public MultiValueMap<String, Object> sendFiles(String directoryName)
             throws NotDirectoryException {
         log.info(Messages.SENDING_FILES);
 
+        List<String> directoriesNames = new LinkedList<>();
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 
+        foldersTraverse(directoryName, formData);
+
+        log.info(Messages.SENT_FILES);
+        return formData;
+    }
+
+    private void foldersTraverse(String rootDirectory, MultiValueMap<String, Object> formData)
+            throws NotDirectoryException {
+        formData.add(rootDirectory, getAllFilesInDirectory(rootDirectory));
+
+        File rootFolder = new File(rootDirectory);
+        File[] folders = rootFolder.listFiles(File::isDirectory);
+        if (folders == null) {
+            return;
+        }
+
+        for (final File folder : folders) {
+            foldersTraverse(
+                    rootDirectory + FileSystems.getDefault().getSeparator() + folder.getName(),
+                    formData);
+        }
+    }
+
+    private List<ByteArrayResource> getAllFilesInDirectory(String directoryName)
+            throws NotDirectoryException {
         File folder = new File(directoryName);
         if (!folder.exists()) {
             throw new DirectoryNotFoundException(Errors.FOLDER_NOT_FOUND);
@@ -40,8 +69,6 @@ public class FileSenderServiceImpl implements FilesSenderService {
         if (folder.isFile()) {
             throw new NotDirectoryException(Errors.PATH_IS_NOT_DIRECTORY);
         }
-
-        formData.add("directoryName", directoryName);
 
         File[] filesInFolder = folder.listFiles(File::isFile);
         if (filesInFolder == null) {
@@ -58,10 +85,6 @@ public class FileSenderServiceImpl implements FilesSenderService {
             }
         }
 
-        formData.add("files", files);
-
-        log.info(Messages.SENT_FILES);
-
-        return formData;
+        return files;
     }
 }
