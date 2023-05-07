@@ -32,14 +32,15 @@ public class FileSenderServiceImpl implements FilesSenderService {
         List<String> directoriesNames = new LinkedList<>();
         MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
 
-        foldersTraverse(directoryName, formData);
+        foldersTraverse(directoryName, formData, directoriesNames);
+        formData.add(directoriesNamesKey, directoriesNames);
 
         log.info(Messages.SENT_FILES);
         return formData;
     }
 
-    private void foldersTraverse(String rootDirectory, MultiValueMap<String, Object> formData)
-            throws NotDirectoryException {
+    private void foldersTraverse(String rootDirectory, MultiValueMap<String, Object> formData,
+                                 List<String> directoriesNames) throws NotDirectoryException {
         formData.add(rootDirectory, getAllFilesInDirectory(rootDirectory));
 
         File rootFolder = new File(rootDirectory);
@@ -49,9 +50,10 @@ public class FileSenderServiceImpl implements FilesSenderService {
         }
 
         for (final File folder : folders) {
-            foldersTraverse(
-                    rootDirectory + FileSystems.getDefault().getSeparator() + folder.getName(),
-                    formData);
+            String directoryName =
+                    rootDirectory + FileSystems.getDefault().getSeparator() + folder.getName();
+            directoriesNames.add(directoryName);
+            foldersTraverse(directoryName, formData, directoriesNames);
         }
     }
 
