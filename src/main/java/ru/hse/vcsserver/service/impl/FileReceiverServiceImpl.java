@@ -1,28 +1,19 @@
 package ru.hse.vcsserver.service.impl;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.util.Strings;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hse.vcsserver.constants.Messages;
-import ru.hse.vcsserver.service.FilesReceiver;
+import ru.hse.vcsserver.service.FilesReceiverService;
 
 @Slf4j
 @Service
-public class FileReceiverImpl implements FilesReceiver {
+public class FileReceiverServiceImpl implements FilesReceiverService {
 
     private final String splitterRegex = "[\\\\/]";
 
@@ -31,8 +22,7 @@ public class FileReceiverImpl implements FilesReceiver {
         log.info(Messages.RECEIVING_FILES + " for directory " + directoryName);
 
         final String[] directories = directoryName.split(splitterRegex);
-        String fullPath = String.join(FileSystems.getDefault().getSeparator(),
-                                      directoryName.split(splitterRegex));
+        String fullPath = String.join(FileSystems.getDefault().getSeparator(), directories);
 
         createFoldersIfNotExists(directories);
 

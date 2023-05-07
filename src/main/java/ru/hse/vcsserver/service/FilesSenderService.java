@@ -1,6 +1,6 @@
 package ru.hse.vcsserver.service;
 
-public interface FilesSender {
+public interface FilesSenderService {
 
     /**
      * Sends files from a specified directory.

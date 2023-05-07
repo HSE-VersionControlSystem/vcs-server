@@ -3,7 +3,7 @@ package ru.hse.vcsserver.service;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface FilesReceiver {
+public interface FilesReceiverService {
 
     /**
      * Saves files in theirs directory.
