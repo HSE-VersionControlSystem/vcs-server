@@ -28,6 +28,11 @@ public class FilesController {
     private final FilesSenderService filesSender;
     private final FoldersService foldersService;
 
+    @GetMapping("all")
+    public ResponseEntity<RepositoriesList> getAllDirectories() {
+        return ResponseEntity.ok(foldersService.getAllFoldersNames());
+    }
+
     @PostMapping("push")
     public ResponseEntity<Void> receiveFiles(@RequestPart("directory_name") String directoryName,
                                              @RequestPart("files") List<MultipartFile> files) {
@@ -39,10 +44,5 @@ public class FilesController {
     public ResponseEntity<MultiValueMap<String, Object>> sendFiles(@PathVariable String folderName)
             throws NotDirectoryException {
         return ResponseEntity.ok(filesSender.sendFiles(folderName));
-    }
-
-    @GetMapping("all")
-    public ResponseEntity<RepositoriesList> getAllDirectories() {
-        return ResponseEntity.ok(foldersService.getAllFoldersNames());
     }
 }

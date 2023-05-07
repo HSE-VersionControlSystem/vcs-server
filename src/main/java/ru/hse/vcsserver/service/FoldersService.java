@@ -1,6 +1,5 @@
 package ru.hse.vcsserver.service;
 
-import java.util.List;
 import ru.hse.vcsserver.model.dto.RepositoriesList;
 
 public interface FoldersService {
