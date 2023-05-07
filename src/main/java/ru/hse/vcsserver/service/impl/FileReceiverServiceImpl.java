@@ -35,6 +35,7 @@ public class FileReceiverServiceImpl implements FilesReceiverService {
                     Files.delete(filePath);
                 }
                 Files.copy(file.getInputStream(), filePath);
+                file.getInputStream().close();
             } catch (final IOException exception) {
                 log.error(exception.getMessage());
             }
