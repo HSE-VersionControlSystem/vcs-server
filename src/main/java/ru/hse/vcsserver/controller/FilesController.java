@@ -7,6 +7,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,9 +35,8 @@ public class FilesController {
     }
 
     @GetMapping("pull/{folderName}")
-    public ResponseEntity<Void> sendFiles(@PathVariable String folderName)
+    public ResponseEntity<MultiValueMap<String, Object>> sendFiles(@PathVariable String folderName)
             throws NotDirectoryException {
-        filesSender.sendFiles(folderName);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(filesSender.sendFiles(folderName));
     }
 }
