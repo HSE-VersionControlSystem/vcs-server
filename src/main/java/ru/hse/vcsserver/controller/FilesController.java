@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hse.vcsserver.model.dto.RepositoriesList;
 import ru.hse.vcsserver.service.FilesReceiverService;
 import ru.hse.vcsserver.service.FilesSenderService;
+import ru.hse.vcsserver.service.FoldersService;
 
 @Slf4j
 @RestController
@@ -24,6 +26,7 @@ public class FilesController {
 
     private final FilesReceiverService filesReceiver;
     private final FilesSenderService filesSender;
+    private final FoldersService foldersService;
 
     @PostMapping("push")
     public ResponseEntity<Void> receiveFiles(@RequestPart("directory_name") String directoryName,
@@ -36,5 +39,10 @@ public class FilesController {
     public ResponseEntity<MultiValueMap<String, Object>> sendFiles(@PathVariable String folderName)
             throws NotDirectoryException {
         return ResponseEntity.ok(filesSender.sendFiles(folderName));
+    }
+
+    @GetMapping("all")
+    public ResponseEntity<RepositoriesList> getAllDirectories() {
+        return ResponseEntity.ok(foldersService.getAllFoldersNames());
     }
 }
