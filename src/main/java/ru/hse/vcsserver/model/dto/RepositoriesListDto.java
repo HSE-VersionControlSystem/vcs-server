@@ -9,5 +9,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepositoriesListDto {
+
     @Getter @Setter private List<String> repositoriesNames;
 }

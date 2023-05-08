@@ -1,6 +1,7 @@
 target
-.gitignore
 .git
+.idea
+.gitignore
+.dockerignore
 Dockerfile
 README.md
-.idea

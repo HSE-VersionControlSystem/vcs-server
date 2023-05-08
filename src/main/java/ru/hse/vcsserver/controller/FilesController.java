@@ -33,16 +33,16 @@ public class FilesController {
         return ResponseEntity.ok(foldersService.getAllFoldersNames());
     }
 
+    @GetMapping("pull/{folderName}")
+    public ResponseEntity<List<FileDto>> sendFiles(@PathVariable String folderName)
+            throws NotDirectoryException {
+        return ResponseEntity.ok(filesSender.sendFiles(folderName));
+    }
+
     @PostMapping("push")
     public ResponseEntity<Void> receiveFiles(@RequestPart("directory_name") String directoryName,
                                              @RequestPart("files") List<MultipartFile> files) {
         filesReceiver.saveFiles(directoryName, files);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("pull/{folderName}")
-    public ResponseEntity<List<FileDto>> sendFiles(@PathVariable String folderName)
-            throws NotDirectoryException {
-        return ResponseEntity.ok(filesSender.sendFiles(folderName));
     }
 }
