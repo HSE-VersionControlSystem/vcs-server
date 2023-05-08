@@ -7,7 +7,8 @@
 ## Инструкция по запуску
 
 1. Установка
-    1. Скачайте docker образ напрямую с [docker hub](https://hub.docker.com)
+    1. Скачайте docker образ напрямую
+       с [docker hub](https://hub.docker.com/repository/docker/davidnatro/vcs-server/general)
        командой ```docker pull davidnatro/vcs-server```
     2. Скачайте данный проект любым удобным для вас способом (например, склонировав с github).
        Перейдите
