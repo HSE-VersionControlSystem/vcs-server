@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import ru.hse.vcsserver.model.dto.RepositoriesList;
+import ru.hse.vcsserver.model.dto.FileDto;
+import ru.hse.vcsserver.model.dto.RepositoriesListDto;
 import ru.hse.vcsserver.service.FilesReceiverService;
 import ru.hse.vcsserver.service.FilesSenderService;
 import ru.hse.vcsserver.service.FoldersService;
@@ -29,7 +29,7 @@ public class FilesController {
     private final FoldersService foldersService;
 
     @GetMapping("all")
-    public ResponseEntity<RepositoriesList> getAllDirectories() {
+    public ResponseEntity<RepositoriesListDto> getAllDirectories() {
         return ResponseEntity.ok(foldersService.getAllFoldersNames());
     }
 
@@ -41,7 +41,7 @@ public class FilesController {
     }
 
     @GetMapping("pull/{folderName}")
-    public ResponseEntity<MultiValueMap<String, Object>> sendFiles(@PathVariable String folderName)
+    public ResponseEntity<List<FileDto>> sendFiles(@PathVariable String folderName)
             throws NotDirectoryException {
         return ResponseEntity.ok(filesSender.sendFiles(folderName));
     }

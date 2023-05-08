@@ -1,7 +1,8 @@
 package ru.hse.vcsserver.service;
 
 import java.nio.file.NotDirectoryException;
-import org.springframework.util.MultiValueMap;
+import java.util.List;
+import ru.hse.vcsserver.model.dto.FileDto;
 
 public interface FilesSenderService {
 
@@ -13,5 +14,5 @@ public interface FilesSenderService {
      *
      * @throws NotDirectoryException Throws exceptions if file exists but is a directory.
      */
-    MultiValueMap<String, Object> sendFiles(String directoryName) throws NotDirectoryException;
+    List<FileDto> sendFiles(String directoryName) throws NotDirectoryException;
 }

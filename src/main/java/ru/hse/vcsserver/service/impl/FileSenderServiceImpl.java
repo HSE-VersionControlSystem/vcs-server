@@ -6,42 +6,44 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import ru.hse.vcsserver.constants.Errors;
 import ru.hse.vcsserver.constants.Messages;
 import ru.hse.vcsserver.exception.DirectoryNotFoundException;
+import ru.hse.vcsserver.model.dto.FileDto;
 import ru.hse.vcsserver.service.FilesSenderService;
 
 @Slf4j
 @Service
 public class FileSenderServiceImpl implements FilesSenderService {
 
-    private final String directoriesNamesKey = "directoriesNames";
-
     @Override
-    public MultiValueMap<String, Object> sendFiles(String directoryName)
-            throws NotDirectoryException {
+    public List<FileDto> sendFiles(String directoryName) throws NotDirectoryException {
         log.info(Messages.SENDING_FILES);
 
-        List<String> directoriesNames = new LinkedList<>();
-        MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+        Map<String, Byte[]> formData = new HashMap<>();
 
-        foldersTraverse(directoryName, formData, directoriesNames);
-        formData.add(directoriesNamesKey, directoriesNames);
+        foldersTraverse(directoryName, formData);
 
         log.info(Messages.SENT_FILES);
-        return formData;
+
+        List<FileDto> files = new ArrayList<>();
+        for (final Map.Entry<String, Byte[]> data : formData.entrySet()) {
+            files.add(new FileDto(data.getKey(), data.getValue()));
+        }
+
+        return files;
     }
 
-    private void foldersTraverse(String rootDirectory, MultiValueMap<String, Object> formData,
-                                 List<String> directoriesNames) throws NotDirectoryException {
-        formData.add(rootDirectory, getAllFilesInDirectory(rootDirectory));
+    private void foldersTraverse(String rootDirectory, Map<String, Byte[]> formData)
+            throws NotDirectoryException {
+        traverseAllFilesInDirectory(rootDirectory, formData);
 
         File rootFolder = new File(rootDirectory);
         File[] folders = rootFolder.listFiles(File::isDirectory);
@@ -52,12 +54,11 @@ public class FileSenderServiceImpl implements FilesSenderService {
         for (final File folder : folders) {
             String directoryName =
                     rootDirectory + FileSystems.getDefault().getSeparator() + folder.getName();
-            directoriesNames.add(directoryName);
-            foldersTraverse(directoryName, formData, directoriesNames);
+            foldersTraverse(directoryName, formData);
         }
     }
 
-    private List<ByteArrayResource> getAllFilesInDirectory(String directoryName)
+    private void traverseAllFilesInDirectory(String directoryName, Map<String, Byte[]> formData)
             throws NotDirectoryException {
         File folder = new File(directoryName);
         if (!folder.exists()) {
@@ -73,16 +74,15 @@ public class FileSenderServiceImpl implements FilesSenderService {
             filesInFolder = new File[0];
         }
 
-        List<ByteArrayResource> files = new LinkedList<>();
-
         for (final File file : filesInFolder) {
             try {
-                files.add(new ByteArrayResource(Files.readAllBytes(Path.of(file.getPath()))));
+                String fullPath =
+                        directoryName + FileSystems.getDefault().getSeparator() + file.getName();
+                formData.put(fullPath,
+                             ArrayUtils.toObject(Files.readAllBytes(Path.of(file.getPath()))));
             } catch (final IOException exception) {
                 log.error(exception.getMessage());
             }
         }
-
-        return files;
     }
 }

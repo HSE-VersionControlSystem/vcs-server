@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.springframework.stereotype.Service;
-import ru.hse.vcsserver.model.dto.RepositoriesList;
+import ru.hse.vcsserver.model.dto.RepositoriesListDto;
 import ru.hse.vcsserver.service.FoldersService;
 
 @Service
@@ -17,12 +17,12 @@ public class FoldersServiceImpl implements FoldersService {
             Arrays.asList("out", ".idea", ".git", "src", ".mvn", "target"));
 
     @Override
-    public RepositoriesList getAllFoldersNames() {
+    public RepositoriesListDto getAllFoldersNames() {
         List<String> foldersNames;
 
         File[] folders = new File(".").listFiles(File::isDirectory);
         if (folders == null) {
-            return new RepositoriesList(new LinkedList<>());
+            return new RepositoriesListDto(new LinkedList<>());
         }
 
         foldersNames = new LinkedList<>();
@@ -33,6 +33,6 @@ public class FoldersServiceImpl implements FoldersService {
             }
         }
 
-        return new RepositoriesList(foldersNames);
+        return new RepositoriesListDto(foldersNames);
     }
 }

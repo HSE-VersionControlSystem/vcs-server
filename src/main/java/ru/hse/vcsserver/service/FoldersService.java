@@ -1,6 +1,6 @@
 package ru.hse.vcsserver.service;
 
-import ru.hse.vcsserver.model.dto.RepositoriesList;
+import ru.hse.vcsserver.model.dto.RepositoriesListDto;
 
 public interface FoldersService {
 
@@ -9,5 +9,5 @@ public interface FoldersService {
      *
      * @return List of folder names.
      */
-    RepositoriesList getAllFoldersNames();
+    RepositoriesListDto getAllFoldersNames();
 }
