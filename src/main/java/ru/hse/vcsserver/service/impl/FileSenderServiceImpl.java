@@ -6,10 +6,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
@@ -27,23 +25,18 @@ public class FileSenderServiceImpl implements FilesSenderService {
     public List<FileDto> sendFiles(String directoryName) throws NotDirectoryException {
         log.info(Messages.SENDING_FILES);
 
-        Map<String, Byte[]> formData = new HashMap<>();
+        List<FileDto> files = new LinkedList<>();
 
-        foldersTraverse(directoryName, formData);
+        foldersTraverse(directoryName, files);
 
         log.info(Messages.SENT_FILES);
-
-        List<FileDto> files = new ArrayList<>();
-        for (final Map.Entry<String, Byte[]> data : formData.entrySet()) {
-            files.add(new FileDto(data.getKey(), data.getValue()));
-        }
 
         return files;
     }
 
-    private void foldersTraverse(String rootDirectory, Map<String, Byte[]> formData)
+    private void foldersTraverse(String rootDirectory, List<FileDto> files)
             throws NotDirectoryException {
-        traverseAllFilesInDirectory(rootDirectory, formData);
+        traverseAllFilesInDirectory(rootDirectory, files);
 
         File rootFolder = new File(rootDirectory);
         File[] folders = rootFolder.listFiles(File::isDirectory);
@@ -54,11 +47,11 @@ public class FileSenderServiceImpl implements FilesSenderService {
         for (final File folder : folders) {
             String directoryName =
                     rootDirectory + FileSystems.getDefault().getSeparator() + folder.getName();
-            foldersTraverse(directoryName, formData);
+            foldersTraverse(directoryName, files);
         }
     }
 
-    private void traverseAllFilesInDirectory(String directoryName, Map<String, Byte[]> formData)
+    private void traverseAllFilesInDirectory(String directoryName, List<FileDto> files)
             throws NotDirectoryException {
         File folder = new File(directoryName);
         if (!folder.exists()) {
@@ -78,8 +71,8 @@ public class FileSenderServiceImpl implements FilesSenderService {
             try {
                 String fullPath =
                         directoryName + FileSystems.getDefault().getSeparator() + file.getName();
-                formData.put(fullPath,
-                             ArrayUtils.toObject(Files.readAllBytes(Path.of(file.getPath()))));
+                files.add(new FileDto(fullPath, ArrayUtils.toObject(
+                        Files.readAllBytes(Path.of(file.getPath())))));
             } catch (final IOException exception) {
                 log.error(exception.getMessage());
             }

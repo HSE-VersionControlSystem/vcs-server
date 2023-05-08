@@ -14,7 +14,8 @@ import ru.hse.vcsserver.service.FoldersService;
 public class FoldersServiceImpl implements FoldersService {
 
     private final Set<String> systemFolders = new HashSet<>(
-            Arrays.asList("out", ".idea", ".git", "src", ".mvn", "target"));
+            Arrays.asList("out", ".idea", ".git", "src", ".mvn", "target", "mvnw", "mvnw.cmd",
+                          "pom.xml"));
 
     @Override
     public RepositoriesListDto getAllFoldersNames() {
