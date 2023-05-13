@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: vcs-server
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
